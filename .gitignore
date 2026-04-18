@@ -1,0 +1,12 @@
+node_modules
+.next
+.env
+.env*.local
+dist
+.DS_Store
+*.log
+
+# The hero video is ~114 MB — exceeds GitHub's 100 MB per-file limit.
+# Keep it untracked and host it on a CDN / Vercel Blob for production.
+# Set NEXT_PUBLIC_HERO_VIDEO_URL in .env to point at the hosted file.
+public/hero.mp4
