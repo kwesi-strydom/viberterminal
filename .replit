@@ -1,10 +1,9 @@
 modules = ["nodejs-20"]
 hidden = [".next", "node_modules"]
 
-# Run command — installs deps on first boot (idempotent: subsequent boots
-# skip install because node_modules is already cached on the Repl), then
-# starts the Next.js dev server bound to 0.0.0.0 so Replit can proxy it.
-run = "[ -d node_modules ] || npm install; npm run dev -- -p 3000 -H 0.0.0.0"
+# Modern Replit workspaces expose port 5000 by default. Bind explicitly so
+# the dev server is reachable through Replit's proxy.
+run = "[ -d node_modules ] || npm install; npm run dev -- -p 5000 -H 0.0.0.0"
 
 [nix]
 channel = "stable-24_05"
@@ -12,7 +11,7 @@ channel = "stable-24_05"
 [env]
 NODE_ENV = "development"
 NEXT_TELEMETRY_DISABLED = "1"
-PORT = "3000"
+PORT = "5000"
 
 [packager]
 language = "nodejs"
@@ -22,12 +21,11 @@ packageSearch = true
 guessImports = true
 
 [[ports]]
-localPort = 3000
+localPort = 5000
 externalPort = 80
 
-# Production deploy: build the optimized bundle and serve it. Replit's
-# Cloud Run deployment target binds the runtime PORT for us.
+# Production deploy: build + serve. Replit's Cloud Run target supplies $PORT.
 [deployment]
-run = ["sh", "-c", "npm install --omit=dev=false && npm run build && npm run start -- -H 0.0.0.0 -p ${PORT:-3000}"]
+run = ["sh", "-c", "npm install && npm run build && npm run start -- -H 0.0.0.0 -p ${PORT:-5000}"]
 deploymentTarget = "cloudrun"
 build = ["sh", "-c", "npm install && npm run build"]

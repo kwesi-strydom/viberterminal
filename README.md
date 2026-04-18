@@ -117,8 +117,9 @@ viber-terminal/
 ├─ components/
 │  ├─ landing/              ← LandingHero
 │  ├─ creator/              ← CreatorHeader, NewPortalForm
-│  └─ world/                ← Scene, Sky, Terrain, Balloon, Airplane,
-│                             Portal, PortalField, HUD, AppOverlay, Clouds
+│  └─ world/                ← Scene, Sky, Terrain, Balloon, Airplane, Aircraft,
+│                             Portal, PortalField, HUD, PortalToast, Clouds,
+│                             NetworkSchoolHotel, SpawnIsland
 └─ lib/
    ├─ db/                   ← Drizzle schema + in-memory fallback + repo
    └─ stores/               ← zustand: useFlight, useWorld
