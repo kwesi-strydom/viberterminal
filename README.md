@@ -60,12 +60,50 @@ process restarts.
 
 ## On Replit
 
-The included `.replit` makes `npm run dev` the default run command on port
-3000, forwarded to external port 80. Hit Run and open the webview.
+### Import from GitHub
 
-For a persistent DB on Replit, add a Postgres instance (Replit DB add-on or a
-Neon project) and paste its connection string into Replit's Secrets as
-`DATABASE_URL`.
+1. replit.com → **Create Repl** → **Import from GitHub**.
+2. Paste `https://github.com/<your-user>/viberterminal`.
+3. Replit auto-detects the `.replit` config and the `modules = ["nodejs-20"]` line.
+4. Hit **Run**. On first boot the included run command does `npm install`
+   (if needed) then starts `npm run dev -- -p 3000 -H 0.0.0.0`. Subsequent
+   boots skip install because `node_modules` persists on the Repl.
+5. Open the webview — you should land on the hero page in 20–40s after the
+   Next.js first compile finishes.
+
+### After import, one-off setup
+
+The `public/hero.mp4` video (114 MB) is **gitignored** — GitHub has a 100 MB
+per-file limit. On a fresh import the landing page falls back to the gradient.
+Two ways to restore the hero video on Replit:
+
+- **Upload directly**: drag `hero.mp4` into `public/` via Replit's Files pane.
+  Works but bloats the Repl.
+- **Host on a CDN** (Vercel Blob, Cloudinary, R2, etc.) and set the env var
+  in Replit **Secrets**:
+
+  ```
+  NEXT_PUBLIC_HERO_VIDEO_URL=https://your-cdn.com/hero.mp4
+  ```
+
+### Production deploy on Replit
+
+The `.replit` `[deployment]` block targets **Cloud Run**. Click **Deploy**
+in the Replit UI — Replit runs `npm install && npm run build`, then
+`npm run start` on the assigned `PORT`. You get a stable `*.replit.app` URL.
+
+### Persistent portal storage (optional)
+
+Without `DATABASE_URL`, new portals added via `/creator/new` live only in
+memory and are lost on restart. To persist:
+
+1. Spin up a free [Neon](https://neon.tech) Postgres project (or use
+   Replit's Postgres add-on).
+2. Paste the connection string into Replit **Secrets** as `DATABASE_URL`.
+3. Open the Shell and run `npm run db:push` once to create the `portals`
+   table.
+4. Restart the Repl. `lib/db/portals.ts` auto-switches from the in-memory
+   store to Drizzle + Neon.
 
 ## Layout
 
